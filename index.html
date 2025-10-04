@@ -28,12 +28,9 @@
         </div>
     </nav>
 
-    <div class="modal" id="workspaceModal" aria-modal="true" role="dialog" aria-labelledby="workspaceTitle" style="display:none;">
-        <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
-            <button class="close" id="closeWorkspaceModal" aria-label="Close My Workshop modal" style="cursor:pointer;">&times;</button>
-            <h2 id="workspaceTitle">My Workshop</h2>
-            <ul id="projectList" style="list-style: none; padding: 0;"></ul>
-        </div>
+    <div id="workshopDropdown" class="workshop-dropdown" style="display:none;">
+        <h3>My Workshop</h3>
+        <ul id="projectList" style="list-style: none; padding: 0;"></ul>
     </div>
     <main class="container">
         <h1 class="hero-title">Automated Satellite Manufacturing</h1>
@@ -301,5 +298,32 @@
             }, 800);
         });
     </script>
+    <!-- Sateliko Chatbot HTML -->
+    <div id="sateliko-chatbot">
+      <div id="sateliko-button" title="Chat with Sateliko">
+        <div id="sateliko-avatar">
+          <div class="satellite-body">
+            <div class="antenna"></div>
+            <div class="face">
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+              <div class="mouth"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="sateliko-chat-window" class="hidden">
+        <div id="sateliko-header">
+          <span>Sateliko AI Chatbot</span>
+          <button id="sateliko-close" aria-label="Close chat window">&times;</button>
+        </div>
+        <div id="sateliko-messages"></div>
+        <form id="sateliko-form">
+          <input type="text" id="sateliko-input" placeholder="Ask me about SatelliteForge..." autocomplete="off" />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+    <script src="chatbot.js"></script>
 </body>
 </html>

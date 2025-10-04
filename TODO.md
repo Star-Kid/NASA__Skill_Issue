@@ -1,24 +1,11 @@
-# SatelliteForge Enhancement TODO
+# Authentication Implementation TODO
 
-## Landing Page Improvements
-- [x] Add smooth scroll animations and parallax effects
-- [ ] Improve mobile responsiveness
-- [x] Add loading animations for the manufacturing system
-- [x] Enhance the build button with a countdown or progress indicator
-
-## Builder Enhancements
-- [ ] Add snap-to-grid functionality for precise component placement
-- [ ] Implement a full undo/redo system (currently only undo)
-- [ ] Add color customization for components in the inspector
-- [ ] Improve component geometries for more realistic satellite parts
-- [ ] Add keyboard shortcuts (e.g., delete selected component)
-- [ ] Enhance export functionality (fix GLB export to actually export binary GLB)
-- [ ] Add component search/filter in the library
-- [ ] Improve validation with more detailed feedback
-
-## General Improvements
-- [ ] Add loading states and progress indicators
-- [ ] Improve error handling and user feedback
-- [ ] Add tooltips and help system
-- [ ] Optimize performance for better frame rates
-- [ ] Add accessibility features (ARIA labels, keyboard navigation)
+- [ ] Add form submission handler for authForm in script.js
+- [ ] Implement signup logic: validate inputs, check username uniqueness, store user in localStorage
+- [ ] Implement login logic: validate credentials against stored users
+- [ ] On successful auth, set currentUser, update UI (hide login/signup, show logout)
+- [ ] Add logout button and functionality
+- [ ] Implement session management: load currentUser on page load
+- [ ] Update navigation bar based on login state
+- [ ] Restrict workspace access to logged-in users
+- [ ] Test authentication flow
