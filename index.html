@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SatelliteForge - Build Your Own Satellite</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="space">
+    <canvas id="satelliteCanvas" aria-hidden="true"></canvas>
+
+    <nav class="navbar">
+        <div class="logo-section">
+            <div class="logo">SF</div>
+            <div class="slogan">Building Tomorrow's Satellites, Today</div>
+        </div>
+        <div class="nav-links">
+            <a href="#how-it-works">How It Works</a>
+            <button id="yourWorkspaceLink" style="background: none; border: none; color: var(--text-color); cursor: pointer; font-size: inherit; font-family: inherit; padding: 10px 15px;">My Workshop</button>
+            <a href="#pricing">Pricing</a>
+            <select id="themeSelector" style="background: var(--navbar-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 5px; padding: 5px;">
+                <option value="space">Space Theme</option>
+                <option value="dark">Dark Theme</option>
+                <option value="light">Light Theme</option>
+            </select>
+            <button class="btn-secondary" id="loginBtn">Log In</button>
+            <button class="btn-primary" id="signupBtn">Sign Up</button>
+        </div>
+    </nav>
+
+    <div class="modal" id="workspaceModal" aria-modal="true" role="dialog" aria-labelledby="workspaceTitle" style="display:none;">
+        <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+            <button class="close" id="closeWorkspaceModal" aria-label="Close My Workshop modal" style="cursor:pointer;">&times;</button>
+            <h2 id="workspaceTitle">My Workshop</h2>
+            <ul id="projectList" style="list-style: none; padding: 0;"></ul>
+        </div>
+    </div>
+    <main class="container">
+        <h1 class="hero-title">Automated Satellite Manufacturing</h1>
+        
+
+        <p class="hero-subtitle">Experience the future of space technology</p>
+
+        <div class="manufacturing-system">
+            <div class="module-box left-box" id="box1">
+                <h3>3D Printing Unit</h3>
+                <div class="box-content">
+                    <div class="printer-icon">
+                        <div class="printer-head"></div>
+                        <div class="printer-platform"></div>
+                        
+                        <div class="print-progress"></div>
+                    </div>
+                    <p>Advanced 3D printing technology</p>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>Ready</span>
+                </div>
+            </div>
+
+            <div class="center-module">
+                <div class="robotic-arms" id="roboticArms">
+                    <div class="arm arm-left">
+                        <div class="arm-segment segment-1"></div>
+                        <div class="arm-segment segment-2"></div>
+                        <div class="arm-segment segment-3"></div>
+                        <div class="gripper"></div>
+                    </div>
+                    <div class="satellite-build" id="satelliteBuild">
+                        <div class="satellite-part core"></div>
+                        <div class="satellite-part panel panel-1"></div>
+                        <div class="satellite-part panel panel-2"></div>
+                        <div class="satellite-part antenna"></div>
+                    </div>
+                    <div class="arm arm-right">
+                        <div class="arm-segment segment-1"></div>
+                        <div class="arm-segment segment-2"></div>
+                        <div class="arm-segment segment-3"></div>
+                        <div class="gripper"></div>
+                    </div>
+                </div>
+        <button class="build-button-rect" id="buildBtn">
+                    <span class="build-text">Build Your Satellite</span>
+                    <span class="build-icon">🚀</span>
+                </button>
+                <div class="build-progress" id="buildProgress">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+                <p class="build-status" id="buildStatus">Ready to build your satellite!</p>
+            </div>
+
+            <div class="module-box right-box" id="box3">
+                <h3>Supply Storage</h3>
+                <div class="box-content">
+                    <div class="supplies-grid">
+                        <div class="supply-item"></div>
+                        <div class="supply-item"></div>
+                        <div class="supply-item"></div>
+                        <div class="supply-item"></div>
+                        <div class="supply-item"></div>
+                        <div class="supply-item"></div>
+                    </div>
+                    <p>Components & Materials</p>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>Stocked</span>
+                </div>
+            </div>
+        </div>
+
+        <section id="how-it-works" class="info-section">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>3D Printing</h4>
+                    <p>Components are printed using advanced materials</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Robotic Assembly</h4>
+                    <p>Precision arms gather and assemble parts</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Quality Check</h4>
+                    <p>Your satellite is tested and ready for deployment</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="pricing-section">
+            <h2>Choose Your Package</h2>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Basic</h3>
+                    <div class="price">$5,000</div>
+                    <ul class="features">
+                        <li>1 Satellite Build</li>
+                        <li>Standard Components</li>
+                        <li>Basic Testing</li>
+                        <li>30-Day Support</li>
+                    </ul>
+                    <button class="purchase-btn" data-package="basic">Purchase</button>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="featured-badge">POPULAR</div>
+                    <h3>Professional</h3>
+                    <div class="price">$12,000</div>
+                    <ul class="features">
+                        <li>3 Satellite Builds</li>
+                        <li>Premium Components</li>
+                        <li>Advanced Testing</li>
+                        <li>90-Day Support</li>
+                        <li>Custom Design Options</li>
+                    </ul>
+                    <button class="purchase-btn" data-package="professional">Purchase</button>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">$25,000</div>
+                    <ul class="features">
+                        <li>Unlimited Builds</li>
+                        <li>Premium Components</li>
+                        <li>Full Testing Suite</li>
+                        <li>1-Year Support</li>
+                        <li>Custom Everything</li>
+                        <li>Priority Queue</li>
+                    </ul>
+                    <button class="purchase-btn" data-package="enterprise">Purchase</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Sign Up</h2>
+            <form id="authForm">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+                <div class="input-group" id="emailField" style="display: none;">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <div class="forgot-password">
+                    <a href="#" id="forgotPasswordLink">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-primary">Continue</button>
+            </form>
+            <p class="toggle-auth">
+                <span id="toggleText">Already have an account?</span>
+                <a href="#" id="toggleAuth">Log In</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="modal" id="purchaseModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Complete Purchase</h2>
+            <div id="purchaseDetails"></div>
+            <form id="paymentForm">
+                <input type="text" placeholder="Card Number" required>
+                <div class="card-details">
+                    <input type="text" placeholder="MM/YY" required>
+                    <input type="text" placeholder="CVC" required>
+                </div>
+                <input type="text" placeholder="Cardholder Name" required>
+                <button type="submit" class="btn-primary">Confirm Purchase</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Workspace modal logic
+        const workspaceModal = document.getElementById('workspaceModal');
+        const closeWorkspaceModal = document.getElementById('closeWorkspaceModal');
+        const projectList = document.getElementById('projectList');
+
+        function loadProjects() {
+            projectList.innerHTML = '';
+            const projects = JSON.parse(localStorage.getItem('satelliteProjects') || '[]');
+            if (projects.length === 0) {
+                projectList.innerHTML = '<li>No saved projects yet.</li>';
+                return;
+            }
+            projects.forEach((project, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${project.name || 'Unnamed Project'}</span>
+                    <button onclick="loadSavedProject(${index})">Load</button>
+                    <button onclick="deleteProject(${index})">Delete</button>
+                `;
+                projectList.appendChild(li);
+            });
+        }
+
+        document.getElementById('yourWorkspaceLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            loadProjects();
+            workspaceModal.style.display = 'block';
+        });
+
+        closeWorkspaceModal.addEventListener('click', () => {
+            workspaceModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === workspaceModal) {
+                workspaceModal.style.display = 'none';
+            }
+        });
+
+        // Loading animation for manufacturing system
+        window.addEventListener('load', () => {
+            const boxes = document.querySelectorAll('.module-box');
+            boxes.forEach((box, index) => {
+                setTimeout(() => {
+                    box.style.opacity = '1';
+                    box.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+
+            // Animate robotic arms
+            setTimeout(() => {
+                const arms = document.querySelector('.robotic-arms');
+                arms.style.opacity = '1';
+                arms.style.transform = 'translateY(0)';
+            }, 600);
+
+            // Animate build button
+            setTimeout(() => {
+                const buildBtn = document.querySelector('.build-button-rect');
+                buildBtn.style.opacity = '1';
+                buildBtn.style.transform = 'scale(1)';
+            }, 800);
+        });
+    </script>
+</body>
+</html>

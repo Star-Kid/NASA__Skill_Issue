@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Builder - Build Your Satellite</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="builder-styles.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+
+    <div class="builder-container">
+        <div class="top-bar">
+            <div class="logo-section">
+                <div class="logo">SF</div>
+                <div class="slogan">Satellite Builder</div>
+            </div>
+            <div class="top-actions">
+                <button class="action-btn" id="uploadBtn">📤 Upload Model</button>
+                <button class="action-btn" id="saveBtn">💾 Save</button>
+                <button class="action-btn" id="exportBtn">📥 Export</button>
+                <button class="action-btn" id="snapBtn" title="Toggle Snap to Grid">📐 Snap</button>
+                <button class="action-btn" id="undoBtn">↶ Undo</button>
+                <button class="action-btn" id="redoBtn">↻ Redo</button>
+                <button class="action-btn" id="backBtn">← Back to Home</button>
+            </div>
+        </div>
+
+        <div class="builder-main">
+            <aside class="component-library">
+                <h3>Component Library</h3>
+                <div class="library-tabs">
+                    <button class="tab-btn active" data-category="all">All</button>
+                    <button class="tab-btn" data-category="panels">Panels</button>
+                    <button class="tab-btn" data-category="antennas">Antennas</button>
+                    <button class="tab-btn" data-category="sensors">Sensors</button>
+                    <button class="tab-btn" data-category="thrusters">Thrusters</button>
+                    <button class="tab-btn" data-category="power">Power</button>
+                    <button class="tab-btn" data-category="comms">Comms</button>
+                    <button class="tab-btn" data-category="structure">Structure</button>
+                </div>
+                <div class="components-grid" id="componentsGrid">
+                </div>
+            </aside>
+
+            <main class="workspace">
+                <div id="scene-container"></div>
+                <div class="workspace-overlay">
+                    <div class="help-text">
+                        <p>🎯 Click components from the library to add them</p>
+                        <p>🖱️ Drag to rotate • Scroll to zoom • Right-click to pan</p>
+                        <p>✨ Click parts to customize</p>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="inspector-panel">
+                <h3>Inspector</h3>
+                <div id="inspectorContent">
+                    <div class="no-selection">
+                        <p>Select a component to edit</p>
+                    </div>
+                </div>
+                
+                <div class="stats-panel">
+                    <h4>Satellite Stats</h4>
+                    <div class="stat-item">
+                        <span>Mass:</span>
+                        <span id="totalMass">0.0 kg</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Power Draw:</span>
+                        <span id="totalPower">0 W</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Power Budget:</span>
+                        <span id="powerBudget" class="budget-neutral">0 W</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Parts:</span>
+                        <span id="partCount">0</span>
+                    </div>
+                </div>
+
+                <div class="validation-panel">
+                    <h4>Validation</h4>
+                    <div id="validationList"></div>
+                </div>
+            </aside>
+        </div>
+
+        <div class="progress-bar">
+            <div class="step completed">
+                <div class="step-icon">✓</div>
+                <span>Login</span>
+            </div>
+            <div class="step active">
+                <div class="step-icon">2</div>
+                <span>Design</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">3</div>
+                <span>Verify</span>
+            </div>
+            <div class="step">
+                <div class="step-icon">4</div>
+                <span>Export</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <span class="close" id="closeUpload">&times;</span>
+            <h2>Upload 3D Model</h2>
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">📦</div>
+                <p>Drag & drop .glb, .gltf, or .obj file</p>
+                <p class="upload-limit">(Max 50MB)</p>
+                <input type="file" id="fileInput" accept=".glb,.gltf,.obj" hidden>
+                <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                    Browse Files
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <span class="close" id="closeExport">&times;</span>
+            <h2>Export Satellite</h2>
+            <div class="export-options">
+                <button class="export-option-btn" id="exportGLB">
+                    <div class="export-icon">📦</div>
+                    <h3>Export 3D Model</h3>
+                    <p>Download as .GLB file</p>
+                </button>
+                <button class="export-option-btn" id="exportPDF">
+                    <div class="export-icon">📄</div>
+                    <h3>Export Report</h3>
+                    <p>PDF with specs & component list</p>
+                </button>
+                <button class="export-option-btn" id="exportJSON">
+                    <div class="export-icon">💾</div>
+                    <h3>Export Data</h3>
+                    <p>JSON scene configuration</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+    <script src="builder.js"></script>
+</body>
+</html>
