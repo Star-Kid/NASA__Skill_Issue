@@ -261,9 +261,9 @@ function setupEventListeners() {
     });
     
     document.getElementById('saveBtn').addEventListener('click', () => {
-        console.log('Save button clicked');
-        showNotification('Save button clicked');
-        saveProject();
+console.log('Save button clicked');
+showNotification('Save button clicked');
+// saveProject(); // Removed to fix error, replaced by event listener below
     });
     document.getElementById('exportBtn').addEventListener('click', () => {
         console.log('Export button clicked');
@@ -685,17 +685,56 @@ function validateSatellite(mass, powerBudget) {
     ).join('');
 }
 
-function saveProject() {
-    const projectName = prompt('Enter project name:', 'My Satellite') || 'Untitled';
-    const project = {
-        name: projectName,
-        userId: currentUser.username,
-        satellite: satellite,
-        timestamp: new Date().toISOString()
-    };
-    
-    localStorage.setItem(`satellite_project_${Date.now()}`, JSON.stringify(project));
-    showNotification(`Project "${projectName}" saved!`);
+function saveSceneToJSON() {
+    return new Promise((resolve, reject) => {
+        if (!scene) {
+            reject('No scene to export');
+            return;
+        }
+        const exporter = new THREE.GLTFExporter();
+        exporter.parse(scene, (gltf) => {
+            resolve(gltf);
+        }, { binary: false });
+    });
+}
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+    const projectName = prompt('Enter project name:', 'My Satellite');
+    if (!projectName) {
+        alert('Project name is required to save.');
+        return;
+    }
+    try {
+        const sceneData = await saveSceneToJSON();
+        const projectData = {
+            name: projectName,
+            timestamp: new Date().toISOString(),
+            sceneData: sceneData
+        };
+        const projects = JSON.parse(localStorage.getItem('satelliteProjects') || '[]');
+        projects.push(projectData);
+        localStorage.setItem('satelliteProjects', JSON.stringify(projects));
+        showNotification(`Satellite design "${projectName}" saved to My Workshop!`);
+    } catch (error) {
+        alert('Failed to export scene data.');
+        console.error('Error exporting scene:', error);
+    }
+});
+
+// Optional: Load project by index from satelliteProjects
+function loadProjectByIndex(index) {
+    const projects = JSON.parse(localStorage.getItem('satelliteProjects') || '[]');
+    if (index < 0 || index >= projects.length) {
+        alert('Invalid project index');
+        return;
+    }
+    const project = projects[index];
+    if (!project || !project.sceneData) {
+        alert('Project data is invalid');
+        return;
+    }
+    // TODO: Implement scene loading from project.sceneData
+    alert(`Loaded project: ${project.name} (loading scene not implemented)`);
 }
 
 function loadSavedProject() {

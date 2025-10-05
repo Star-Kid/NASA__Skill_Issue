@@ -24,13 +24,16 @@
                 <option value="light">Light Theme</option>
             </select>
             <button class="btn-secondary" id="loginBtn">Log In</button>
-            <button class="btn-primary" id="signupBtn">Sign Up</button>
+        <button class="btn-primary" id="signupBtn">Sign Up</button>
         </div>
     </nav>
 
-    <div id="workshopDropdown" class="workshop-dropdown" style="display:none;">
-        <h3>My Workshop</h3>
-        <ul id="projectList" style="list-style: none; padding: 0;"></ul>
+    <div id="workshopDropdown" class="modal" role="dialog" aria-modal="true" aria-labelledby="workshopTitle" style="display:none;">
+        <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+            <button class="close" id="closeWorkshopModal" aria-label="Close My Workshop modal" style="cursor:pointer;">&times;</button>
+            <h3 id="workshopTitle">My Workshop</h3>
+            <ul id="projectList" style="list-style: none; padding: 0;"></ul>
+        </div>
     </div>
     <main class="container">
         <h1 class="hero-title">Automated Satellite Manufacturing</h1>

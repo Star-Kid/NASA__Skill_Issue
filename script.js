@@ -1,4 +1,4 @@
-// SatelliteForge unified script.js
+ // SatelliteForge unified script.js
 
 let currentUser = null;
 let isSignup = true;
@@ -111,6 +111,22 @@ function updateUIForLoggedIn() {
   }
 }
 
+function addTestProject() {
+  const testProject = {
+    name: 'Test Satellite Project',
+    components: [
+      { name: 'Core', quantity: 1 },
+      { name: 'Solar Panel', quantity: 2 },
+      { name: 'Antenna', quantity: 1 }
+    ],
+    createdAt: new Date().toISOString()
+  };
+  let projects = JSON.parse(localStorage.getItem('satelliteProjects') || '[]');
+  projects.push(testProject);
+  localStorage.setItem('satelliteProjects', JSON.stringify(projects));
+  alert('Test project added to My Workshop. Open My Workshop to see it.');
+}
+
 // ----------------- WORKSHOP DROPDOWN -----------------
 function openWorkshopDropdown() {
   lastFocusedElement = document.activeElement;
@@ -119,6 +135,8 @@ function openWorkshopDropdown() {
     workshopDropdown.style.display = 'block';
     document.body.style.overflow = 'hidden';
     workshopDropdown.setAttribute('aria-hidden', 'false');
+    // Enable scrolling inside modal
+    workshopDropdown.style.overflowY = 'auto';
   }
 }
 
@@ -126,7 +144,7 @@ function closeWorkshopDropdown() {
   const workshopDropdown = document.getElementById('workshopDropdown');
   if (workshopDropdown) {
     workshopDropdown.style.display = 'none';
-    document.body.style.overflow = '';
+    document.body.style.overflow = 'auto'; // Ensure scroll is restored
     workshopDropdown.setAttribute('aria-hidden', 'true');
     if (lastFocusedElement) lastFocusedElement.focus();
   }
@@ -134,40 +152,58 @@ function closeWorkshopDropdown() {
 
 function loadProjects() {
   const projectList = document.getElementById('projectList');
-  if (!projectList) return;
+  if (!projectList) {
+    console.error('projectList element not found');
+    return;
+  }
   projectList.innerHTML = '';
-  const projects = JSON.parse(localStorage.getItem('satelliteProjects') || '[]');
-  if (projects.length === 0) {
+  // Load all projects with keys starting with 'satellite_project_'
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('satellite_project_'));
+  if (keys.length === 0) {
     projectList.innerHTML = '<li>No saved projects yet.</li>';
     return;
   }
+  const projects = keys.map(k => JSON.parse(localStorage.getItem(k)));
+  console.log('Loaded projects from localStorage:', projects);
   projects.forEach((project, index) => {
     const li = document.createElement('li');
     li.innerHTML = `<span>${project.name || 'Unnamed Project'}</span>
-      <button data-action="load" data-index="${index}">Load</button>
-      <button data-action="delete" data-index="${index}">Delete</button>`;
+      <button data-action="load" data-key="${keys[index]}">Load</button>
+      <button data-action="delete" data-key="${keys[index]}">Delete</button>`;
     projectList.appendChild(li);
   });
   projectList.querySelectorAll('button[data-action="load"]').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const idx = parseInt(e.currentTarget.getAttribute('data-index'), 10);
-      loadSavedProject(idx);
+      const key = e.currentTarget.getAttribute('data-key');
+      loadSavedProject(key);
+      closeWorkshopDropdown(); // Close modal immediately on load
     });
   });
   projectList.querySelectorAll('button[data-action="delete"]').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const idx = parseInt(e.currentTarget.getAttribute('data-index'), 10);
-      deleteProject(idx);
+      const key = e.currentTarget.getAttribute('data-key');
+      deleteProject(key);
     });
   });
 }
 
-function loadSavedProject(index) {
-  const projects = JSON.parse(localStorage.getItem('satelliteProjects') || '[]');
-  if (projects[index]) {
-    localStorage.setItem('currentProject', JSON.stringify(projects[index]));
+function loadSavedProject(key) {
+  const projectStr = localStorage.getItem(key);
+  if (projectStr) {
+    const project = JSON.parse(projectStr);
+    localStorage.setItem('currentProject', projectStr);
     window.location.href = 'builder.html';
   }
+}
+
+function deleteProject(key) {
+  localStorage.removeItem(key);
+  loadProjects();
+}
+
+function loadSavedProject(index) {
+  // This function is now replaced by loadSavedProject(key)
+  // Remove this old function to avoid confusion
 }
 
 function deleteProject(index) {
@@ -206,6 +242,14 @@ function resizeCanvas() {
   canvas.height = height;
 }
 
+const COMPONENTS = [
+  { name: 'Core', cost: 5000, mass: 50 },
+  { name: 'Solar Panel', cost: 2000, mass: 20 },
+  { name: 'Antenna', cost: 1500, mass: 10 },
+  { name: 'Battery', cost: 3000, mass: 30 },
+  { name: 'Thruster', cost: 4000, mass: 40 }
+];
+
 class Satellite {
   constructor() {
     this.x = Math.random() * width;
@@ -225,6 +269,13 @@ class Satellite {
       'rgba(148, 0, 211, 0.6)'
     ];
     this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+    // Assign random components to this satellite
+    this.components = [];
+    const compCount = 2 + Math.floor(Math.random() * 3); // 2 to 4 components
+    for (let i = 0; i < compCount; i++) {
+      const comp = COMPONENTS[Math.floor(Math.random() * COMPONENTS.length)];
+      this.components.push(comp);
+    }
   }
   update() {
     this.angle += this.speed;
@@ -243,6 +294,12 @@ class Satellite {
     ctx.drawImage(satelliteImage, -this.size/2, -this.size/2, this.size, this.size);
     ctx.restore();
   }
+  getTotalCost() {
+    return this.components.reduce((sum, c) => sum + c.cost, 0);
+  }
+  getTotalMass() {
+    return this.components.reduce((sum, c) => sum + c.mass, 0);
+  }
 }
 function initSatellites() {
   satellites = [];
@@ -250,8 +307,24 @@ function initSatellites() {
 }
 function animate() {
   ctx.clearRect(0, 0, width, height);
-  satellites.forEach(s => { s.update(); s.draw(); });
+  satellites.forEach(s => { 
+    s.update(); 
+    s.draw(); 
+  });
+  updateSatelliteStats();
   animationId = requestAnimationFrame(animate);
+}
+
+function updateSatelliteStats() {
+  const statsDiv = document.getElementById('satelliteStats');
+  if (!statsDiv) return;
+  let totalCost = 0;
+  let totalMass = 0;
+  satellites.forEach(sat => {
+    totalCost += sat.getTotalCost();
+    totalMass += sat.getTotalMass();
+  });
+  statsDiv.textContent = `Total Cost: $${totalCost.toLocaleString()} | Total Mass: ${totalMass.toFixed(1)} kg`;
 }
 function handleVisibilityChange() {
   if (document.hidden) cancelAnimationFrame(animationId);
