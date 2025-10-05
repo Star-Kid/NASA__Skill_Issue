@@ -926,18 +926,21 @@ function exportPDF() {
     document.getElementById('exportModal').style.display = 'none';
 }
 
-function exportJSON() {
+function exportJSON() { 
     const data = JSON.stringify(satellite, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'satellite-config.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    showNotification('✅ Configuration exported!');
-    document.getElementById('exportModal').style.display = 'none';
-}
+     const blob = new Blob([data], { type: 'application/json' }); 
+     const url = URL.createObjectURL(blob); 
+     const a = document.createElement('a'); 
+     a.href = url; a.download = 'satellite-config.json'; 
+     a.click(); URL.revokeObjectURL(url); 
+     fetch('http://localhost:3000/api/save-satellite', 
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: data })
+         .then(response => response.json()) 
+         .then(result => { console.log('Saved to DB:', result);
+             showNotification('✅ Configuration exported and saved to database!'); }) 
+             .catch(error => { console.error('Error saving to DB:', error); 
+                showNotification('❌ Configuration exported but failed to save to database'); });
+            }
 
 function showNotification(message) {
     const notification = document.createElement('div');
